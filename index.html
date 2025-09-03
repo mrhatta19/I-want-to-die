@@ -454,10 +454,11 @@
         }
 
         function spinWheel() {
-            console.log('🎯 Spin button clicked!');
+            const timestamp = Date.now();
+            console.log('🎯 Spin button clicked! (ID:', timestamp, ')');
             
             if (isSpinning) {
-                console.log('Already spinning...');
+                console.log('Already spinning, ignoring click...');
                 return;
             }
             
@@ -465,6 +466,8 @@
             const spinButton = document.getElementById('spinButton');
             spinButton.disabled = true;
             spinButton.textContent = '🎯 SPINNING...';
+            
+            console.log('✅ Starting spin animation...');
             
             // Generate random spin
             const minSpins = 3;
@@ -481,6 +484,8 @@
             canvas.classList.add('spinning');
             
             setTimeout(() => {
+                console.log('⏰ Spin animation completed (ID:', timestamp, ')');
+                
                 canvas.classList.remove('spinning');
                 currentRotation = finalAngle % (2 * Math.PI);
                 drawWheel();
@@ -499,18 +504,20 @@
                 }
                 
                 const winner = foodOptions[segmentIndex];
-                console.log('🏆 Winner:', winner.name);
+                console.log('🏆 Winner calculated:', winner.name, '(ID:', timestamp, ')');
                 
-                showResult(winner);
+                console.log('📺 About to call showResult for:', winner.name, '(ID:', timestamp, ')');
+                showResult(winner, timestamp);
                 
                 isSpinning = false;
                 spinButton.disabled = false;
                 spinButton.textContent = '🎯 SPIN AGAIN!';
+                console.log('🔄 Spin completed, button reset (ID:', timestamp, ')');
             }, duration);
         }
 
-        function showResult(food) {
-            console.log('📺 Showing result for:', food.name);
+        function showResult(food, spinId) {
+            console.log('📺 showResult called for:', food.name, '(Spin ID:', spinId, ')');
             
             // Update display
             document.getElementById('foodEmoji').textContent = food.emoji;
@@ -530,8 +537,53 @@
                 </div>
             `;
             
+            console.log('🔍 About to call searchRealRestaurants for:', food.name, '(Spin ID:', spinId, ')');
             // Search for real restaurants
-            searchRealRestaurants(food);
+            searchRealRestaurants(food, spinId);
+        }
+
+        async function searchRealRestaurants(food, spinId) {
+            console.log('🔍 searchRealRestaurants called for:', food.name, '(Spin ID:', spinId, ')');
+            console.log('📍 Current userLocation:', userLocation);
+            
+            if (!userLocation) {
+                console.log('❌ No location available (Spin ID:', spinId, ')');
+                showError('Location not available. Please enable location access.');
+                const demoRestaurants = generateDemoRestaurants(food);
+                displayRestaurants(demoRestaurants, true);
+                return;
+            }
+            
+            try {
+                // Method 1: Try Nominatim API
+                console.log('🔎 Trying Nominatim API... (Spin ID:', spinId, ')');
+                let restaurants = await searchWithNominatim(food.query, userLocation.lat, userLocation.lng);
+                
+                if (restaurants && restaurants.length > 0) {
+                    console.log('✅ Found restaurants with Nominatim:', restaurants.length, '(Spin ID:', spinId, ')');
+                    displayRestaurants(restaurants, false); // false = real data
+                    return;
+                }
+                
+                // Method 2: Try Overpass API (simplified)
+                console.log('🔎 Trying simplified Overpass API... (Spin ID:', spinId, ')');
+                restaurants = await searchWithOverpass(food.query, userLocation.lat, userLocation.lng);
+                
+                if (restaurants && restaurants.length > 0) {
+                    console.log('✅ Found restaurants with Overpass:', restaurants.length, '(Spin ID:', spinId, ')');
+                    displayRestaurants(restaurants, false);
+                    return;
+                }
+                
+                console.log('⚠️ No real restaurants found, showing demo data (Spin ID:', spinId, ')');
+                const demoRestaurants = generateDemoRestaurants(food);
+                displayRestaurants(demoRestaurants, true); // true = demo data
+                
+            } catch (error) {
+                console.error('❌ Real restaurant search failed (Spin ID:', spinId, '):', error);
+                const demoRestaurants = generateDemoRestaurants(food);
+                displayRestaurants(demoRestaurants, true);
+            }
         }
 
         async function searchRealRestaurants(food) {
