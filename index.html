@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Matter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Lora', serif;
+            font-weight: 500;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .initial-screen {
+            display: block;
+        }
+
+        .healing-screen {
+            display: none;
+        }
+
+        .title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+
+        .how-button {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            font-family: 'Lora', serif;
+            font-weight: 500;
+            font-size: 1.5rem;
+            padding: 15px 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .how-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .healing-message {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        .controls {
+            margin-top: 3rem;
+        }
+
+        .control-button {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            font-family: 'Lora', serif;
+            font-weight: 400;
+            font-size: 1rem;
+            padding: 10px 25px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .back-button {
+            margin-top: 2rem;
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #666;
+            font-family: 'Lora', serif;
+            font-weight: 400;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #666;
+            color: #ffffff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .healing-message {
+                font-size: 1.4rem;
+                min-height: 100px;
+            }
+            
+            .how-button {
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }
+        }
+
+        .crisis-resources {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .crisis-resources a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="initial-screen" id="initialScreen">
+            <h1 class="title">I want to die</h1>
+            <p class="subtitle">If you're feeling this way, please know you're not alone</p>
+            <button class="how-button" onclick="showHealing()">HOW</button>
+        </div>
+
+        <div class="healing-screen" id="healingScreen">
+            <div class="healing-message" id="healingMessage">
+                You've already come so far, don't forget that.
+            </div>
+            
+            <div class="controls">
+                <button class="control-button" onclick="nextMessage()">HOW</button>
+            </div>
+            
+            <button class="back-button" onclick="goBack()">← Back</button>
+        </div>
+    </div>
+
+    <div class="crisis-resources">
+        <div>Crisis Support: 15999 (Malaysia) | Befrienders KL</div>
+        <div><a href="https://findahelpline.com" target="_blank">Find Your Country's Crisis Line</a></div>
+    </div>
+
+    <script>
+        const healingMessages = [
+            "You've already come so far, don't forget that.",
+            "Every small step you take matters.",
+            "You are stronger than you realize.",
+            "Healing takes time, and you're doing it.",
+            "Your feelings are valid, always.",
+            "It's okay to rest; rest is part of progress.",
+            "You are not alone, even when it feels like it.",
+            "Cry if you need to, tears are brave too.",
+            "Today you survived—that's already enough.",
+            "You're learning how to rise again.",
+            "The world is gentler with you in it.",
+            "You are worthy of love and kindness.",
+            "Don't compare your journey, yours is unique.",
+            "Every scar is proof of your survival.",
+            "You've walked through storms before, and you can again.",
+            "Your heart is softer than you think, and that's power.",
+            "You deserve to be proud of yourself.",
+            "No pain lasts forever.",
+            "You are growing, even if you don't notice it.",
+            "You are a gift to the world.",
+            "Mistakes don't define you.",
+            "You have every right to rest.",
+            "You're doing the best you can.",
+            "You are still worthy on your worst days.",
+            "It's okay to ask for help.",
+            "The fact you're still trying means you're winning.",
+            "You've survived 100% of your hard days.",
+            "You're not behind; life isn't a race.",
+            "You are allowed to feel everything.",
+            "Keep breathing, that's enough.",
+            "The universe is not against you.",
+            "Every sunrise is another chance for you.",
+            "You are not broken, just healing.",
+            "You matter more than you think.",
+            "You are not a burden.",
+            "You can start over anytime.",
+            "It's brave to keep going.",
+            "You're not failing; you're learning.",
+            "You are doing better than yesterday.",
+            "You deserve joy, not just survival.",
+            "Don't forget to celebrate yourself.",
+            "You are enough, always enough.",
+            "The future is still full of surprises.",
+            "You are allowed to take it slow.",
+            "No one can take your light away.",
+            "You are loved more than you know.",
+            "You've turned pain into strength before.",
+            "Keep choosing yourself.",
+            "You are a fighter with a gentle soul.",
+            "Your presence makes a difference.",
+            "You've already overcome so much.",
+            "Hope still lives inside you.",
+            "Your smile is proof of resilience.",
+            "You are deserving of peace.",
+            "You are stronger than this moment.",
+            "It's okay to not be okay.",
+            "Your story isn't finished yet.",
+            "Even broken crayons still color.",
+            "You are growing through what you go through.",
+            "The world needs your softness.",
+            "Don't forget to forgive yourself.",
+            "You are more than your struggles.",
+            "You are not your past.",
+            "You can always begin again.",
+            "Strength looks like you.",
+            "You are doing enough.",
+            "You are allowed to feel tired.",
+            "Every breath is proof you're alive.",
+            "You've already made it this far.",
+            "Your courage shines quietly.",
+            "You don't need to prove your worth.",
+            "You are allowed to change.",
+            "You are worthy of gentleness.",
+            "You deserve kindness from yourself too.",
+            "Your journey is beautiful in its own way.",
+            "You've survived all your bad days.",
+            "You are not weak for crying.",
+            "You can rest without guilt.",
+            "Your soul is resilient.",
+            "You're still here, and that's powerful.",
+            "You deserve light after the dark.",
+            "Don't forget how far you've come.",
+            "You are irreplaceable.",
+            "Every stumble is still forward.",
+            "You are made of strength and softness.",
+            "Your effort matters, even if unseen.",
+            "You are not too late.",
+            "You are braver than your fears.",
+            "You deserve all good things.",
+            "You're allowed to feel proud of yourself.",
+            "You can carry this one step at a time.",
+            "You are loved, even when you forget.",
+            "You are becoming someone stronger.",
+            "You are more than enough.",
+            "You are worthy of every dream.",
+            "You are a survivor, not just a struggler.",
+            "You can trust yourself.",
+            "You've already made progress.",
+            "You are not too much.",
+            "You deserve to heal fully.",
+            "You are allowed to shine in your own time.",
+            "You are doing better than you think.",
+            "Your kindness is your strength.",
+            "You don't need to rush healing.",
+            "You are worth waiting for.",
+            "You have survived every storm so far.",
+            "Your heart is still learning to bloom.",
+            "You are a light in dark places.",
+            "You are not invisible.",
+            "You are precious, no matter what.",
+            "You don't need to be perfect to be loved.",
+            "Your story still matters.",
+            "You are stronger than your doubts.",
+            "You deserve to rest without guilt.",
+            "You are not defined by your mistakes.",
+            "Your existence is enough proof of worth.",
+            "You are doing a wonderful job existing.",
+            "You deserve kindness every day.",
+            "You are worthy of being cherished.",
+            "Your courage is inspiring, even when silent.",
+            "You are loved for who you are.",
+            "You are not too late to grow.",
+            "Your scars tell a story of survival.",
+            "You are allowed to choose yourself.",
+            "You are gentle and still strong.",
+            "You can rebuild as many times as needed.",
+            "You deserve love that feels safe.",
+            "You are more powerful than fear.",
+            "Your presence makes life brighter.",
+            "You are doing your best, and that's enough.",
+            "You are not defined by how fast you move.",
+            "You have strength inside that no one can take.",
+            "You are allowed to be soft.",
+            "Your emotions are not too much.",
+            "You are worthy of someone's patience.",
+            "You've faced the hardest days and stood again.",
+            "You are not a mistake.",
+            "You are a masterpiece in progress.",
+            "You are brave for still believing in tomorrow.",
+            "Your worth doesn't shrink on bad days.",
+            "You are loved more than your fears whisper.",
+            "You are allowed to rewrite your story.",
+            "You are strong enough to face today.",
+            "You deserve the gentleness you give others.",
+            "You are not alone in this path.",
+            "You are more resilient than you see.",
+            "You can take things one breath at a time.",
+            "You are worthy of joy without conditions.",
+            "You are brave for trying again.",
+            "You have permission to rest and reset.",
+            "You are not your struggles.",
+            "You are capable of great healing.",
+            "You are allowed to change directions.",
+            "You deserve peace within yourself.",
+            "You are already enough.",
+            "You are not forgotten.",
+            "You are growing roots even in silence.",
+            "You can trust the process of healing.",
+            "You are loved even in your quietest moments.",
+            "You deserve to take up space.",
+            "You are more than your pain.",
+            "You are not too much to handle.",
+            "You are capable of new beginnings.",
+            "You are allowed to pause.",
+            "You are not behind; your timing is perfect.",
+            "You are someone's safe place.",
+            "You are braver than your past self.",
+            "You are worthy of happiness.",
+            "You can grow even in small steps.",
+            "You are never too broken to heal.",
+            "You are important to the world.",
+            "You are stronger than the storm inside.",
+            "You are loved even when you feel unlovable.",
+            "You are a light in someone's darkness.",
+            "You are more than your fears.",
+            "You can rise again, as you always have.",
+            "You deserve to be cared for.",
+            "You are worthy of a calm life.",
+            "You are enough even without doing anything.",
+            "You can hold hope gently.",
+            "You are not failing; you are still learning.",
+            "You are not too far gone.",
+            "You are worthy of dreams coming true.",
+            "You are stronger than yesterday.",
+            "You deserve to feel safe.",
+            "You are lovable just as you are.",
+            "You are a survivor with a tender heart.",
+            "You can trust your journey.",
+            "You are resilient, even in silence.",
+            "You are not forgotten by the world.",
+            "You are precious even in your flaws.",
+            "You can start over at any moment.",
+            "You are worthy of endless second chances.",
+            "You are more than your sadness.",
+            "You deserve the love you give away.",
+            "You are enough, no matter what.",
+            "You can bloom even after winter.",
+            "You are stronger than your loneliness.",
+            "You are still becoming.",
+            "You are loved, here and now."
+        ];
+
+        let currentMessageIndex = 0;
+        let messageElement;
+
+        function showHealing() {
+            document.getElementById('initialScreen').style.display = 'none';
+            document.getElementById('healingScreen').style.display = 'block';
+            messageElement = document.getElementById('healingMessage');
+            showMessage(0);
+        }
+
+        function showMessage(index) {
+            messageElement.classList.remove('fade-out');
+            messageElement.classList.add('fade-out');
+            
+            setTimeout(() => {
+                messageElement.textContent = healingMessages[index];
+                messageElement.classList.remove('fade-out');
+                messageElement.style.animation = 'none';
+                setTimeout(() => {
+                    messageElement.style.animation = 'fadeIn 1s ease-in-out forwards';
+                }, 10);
+            }, 500);
+        }
+
+        function nextMessage() {
+            currentMessageIndex = (currentMessageIndex + 1) % healingMessages.length;
+            showMessage(currentMessageIndex);
+        }
+
+        function goBack() {
+            document.getElementById('healingScreen').style.display = 'none';
+            document.getElementById('initialScreen').style.display = 'block';
+        }
+
+        // Auto-advance messages every 10 seconds
+        setInterval(() => {
+            if (document.getElementById('healingScreen').style.display === 'block') {
+                nextMessage();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
