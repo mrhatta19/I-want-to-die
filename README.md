@@ -4,6 +4,8 @@
 
 This is a simple website with one purpose: to offer a moment of peace and a word of encouragement to anyone feeling down, depressed, or overwhelmed.
 
+This website is created to reach people who are struggling with depression, anxiety, or hopelessness. Sometimes, a few words of encouragement can make a difference. When you click the “HOW” button, you will see a randomly selected sentence that reminds you of your worth, your strength, and your right to rest and heal
+
 There are no complicated tools, no sign-ups, and no advice. Just gentle reminders that you are not alone in how you feel, and that better moments are ahead.
 
 ## What This Is
